@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.quarkus.io/commit-id: 32b13eb013d3af75f6b957c275bdda4375d23de1
+    app.quarkus.io/build-timestamp: 2023-10-02 - 17:21:51 +0000
+  labels:
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    app.kubernetes.io/name: nos-data-service
+  name: nos-data-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/version: 1.0.0-SNAPSHOT
+      app.kubernetes.io/name: nos-data-service
+  template:
+    metadata:
+      annotations:
+        app.quarkus.io/commit-id: 32b13eb013d3af75f6b957c275bdda4375d23de1
+        app.quarkus.io/build-timestamp: 2023-10-02 - 17:21:51 +0000
+      labels:
+        app.kubernetes.io/version: 1.0.0-SNAPSHOT
+        app.kubernetes.io/name: nos-data-service
+    spec:
+      containers:
+        - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: mihajlo/nos-data-service:1.0.0-SNAPSHOT
+          imagePullPolicy: Always
+          name: nos-data-service
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.quarkus.io/commit-id: 32b13eb013d3af75f6b957c275bdda4375d23de1
+    app.quarkus.io/build-timestamp: 2023-10-02 - 17:21:51 +0000
+  labels:
+    app.kubernetes.io/name: nos-data-service
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  name: nos-data-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: nos-data-service
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  type: ClusterIP
